@@ -1,3 +1,16 @@
+= igraph-ng-0.1.0 2014-05-11
+
+* Gem name changed to igraph-ng
+* Reset of version numbering
+* Gem installs cleanly and passes tests with igraph-0.5.4
+
+= 0.10.0 2014-05-11
+
+* Native extension ported to ruby 1.9
+* Extension properly compiles with igraph-0.5.4
+* Fixed incorrect reporting of infinite paths in cIGraph_shortest_paths
+* Added freeing memory allocated by calls to open_memstream in cIGraph_file.c
+
 = 0.9   2007-11-19
 
 * All igraph functions wrapped

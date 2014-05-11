@@ -92,11 +92,12 @@ VALUE cIGraph_initialize(int argc, VALUE *argv, VALUE self){
   igraph_vector_ptr_t edge_attr;
 
   igraph_i_attribute_record_t v_attr_rec;
+  igraph_i_attribute_record_t e_attr_rec;
+  
   v_attr_rec.name  = "__RUBY__";
   v_attr_rec.type  = IGRAPH_ATTRIBUTE_PY_OBJECT;
   v_attr_rec.value = (void*)rb_ary_new();
-
-  igraph_i_attribute_record_t e_attr_rec;
+  
   e_attr_rec.name  = "__RUBY__";
   e_attr_rec.type  = IGRAPH_ATTRIBUTE_PY_OBJECT;
   e_attr_rec.value = (void*)rb_ary_new();
@@ -121,8 +122,8 @@ VALUE cIGraph_initialize(int argc, VALUE *argv, VALUE self){
     IGRAPH_CHECK(igraph_to_undirected(graph,IGRAPH_TO_UNDIRECTED_COLLAPSE));
 
   //Loop through objects in edge Array
-  for (i=0; i<RARRAY(edges)->len; i++) {
-    vertex = RARRAY(edges)->ptr[i];
+  for (i=0; i<RARRAY_LEN(edges); i++) {
+    vertex = RARRAY_PTR(edges)[i];
     if(rb_ary_includes(v_ary,vertex)){
       //If @vertices includes this vertex then look up the vertex number
       current_vertex_id = NUM2INT(rb_funcall(v_ary,rb_intern("index"),1,vertex));
@@ -139,7 +140,7 @@ VALUE cIGraph_initialize(int argc, VALUE *argv, VALUE self){
     IGRAPH_CHECK(igraph_vector_push_back(&edge_v,current_vertex_id));
     if (i % 2){
       if (attrs != Qnil){
-	rb_ary_push((VALUE)e_attr_rec.value,RARRAY(attrs)->ptr[i/2]);
+	rb_ary_push((VALUE)e_attr_rec.value,RARRAY_PTR(attrs)[i/2]);
       } else {
 	rb_ary_push((VALUE)e_attr_rec.value,Qnil);
       }
@@ -556,7 +557,7 @@ void Init_igraph(){
   rb_define_method(cIGraph_community, "community_eb_get_merges", cIGraph_community_eb_get_merges, 1);  /* in cIGraph_community.c */  
   rb_define_method(cIGraph_community, "community_fastgreedy", cIGraph_community_fastgreedy, 0);  /* in cIGraph_community.c */  
 
-  rb_define_const(cIGraph, "VERSION", rb_str_new2("0.9.1"));
+  
 
   rb_define_const(cIGraph, "EDGEORDER_ID",   INT2NUM(1));
   rb_define_const(cIGraph, "EDGEORDER_FROM", INT2NUM(2));
@@ -627,5 +628,7 @@ void Init_igraph(){
   rb_define_method(cIGraphMatrix, "*", cIGraph_matrix_scale, 1); /* in cIGraph_matrix.c */
 
   rb_define_method(cIGraphMatrix, "to_a", cIGraph_matrix_toa, 0); /* in cIGraph_matrix.c */
+  
+  rb_define_const(cIGraph, "VERSION", rb_str_new2("0.1.0"));
 
 }

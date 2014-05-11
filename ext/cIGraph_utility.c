@@ -8,7 +8,7 @@ igraph_integer_t cIGraph_get_vertex_id(VALUE graph, VALUE v){
   VALUE idx;
   igraph_t *igraph;
 
-  VALUE str;
+  /*VALUE str;*/
 
   Data_Get_Struct(graph, igraph_t, igraph);
   v_ary = ((VALUE*)igraph->attr)[0];
@@ -52,8 +52,8 @@ int cIGraph_vertex_arr_to_id_vec(VALUE graph, VALUE va, igraph_vector_t *nv){
     
   //Initialize edge vector
   //igraph_vector_init_int(nv,0);
-  for (i=0; i<RARRAY(va)->len; i++) {
-    vertex = RARRAY(va)->ptr[i];
+  for (i=0; i<(VALUE)RARRAY_LEN(va); i++) {
+    vertex = RARRAY_PTR(va)[i];
     igraph_vector_push_back(nv,cIGraph_get_vertex_id(graph, vertex));
   }
 

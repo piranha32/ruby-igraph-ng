@@ -1,0 +1,4 @@
+2014-05-09
+	* Port cIGraph_read_graph_dimacs in cIGraph_file.c:532 to new version
+	  Temporarily disabled call to igraph_read_graph_dimacs due to missing call parameters
+	* 2014-05-11 - added extra params to te call, function barfs during test.
