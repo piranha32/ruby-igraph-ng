@@ -3,7 +3,11 @@ require 'cairo'
 
 gs = []
 vs = []
-ARGV[0].to_i.times do |n|
+
+
+#ARGV[0].to_i.times do |n|
+number=50
+number.to_i.times do |n|
   gs << IGraph::Generate.atlas(n+1)
   vs += gs[-1].vertices
 end

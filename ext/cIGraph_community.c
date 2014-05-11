@@ -55,7 +55,7 @@ VALUE cIGraph_modularity(VALUE self, VALUE groups){
 
 VALUE cIGraph_community_to_membership(VALUE self, VALUE merge, VALUE steps, VALUE nodes){
 
-  igraph_t *graph;
+  /*igraph_t *graph;*/
   igraph_matrix_t *merges;
 
   igraph_vector_t membership;
@@ -64,7 +64,7 @@ VALUE cIGraph_community_to_membership(VALUE self, VALUE merge, VALUE steps, VALU
 
   int i,groupid,max_groupid;
 
-  Data_Get_Struct(self, igraph_t, graph);
+  /*Data_Get_Struct(self, igraph_t, graph);*/
   Data_Get_Struct(merge, igraph_matrix_t, merges);
 
   igraph_vector_init(&membership,0);
@@ -121,7 +121,7 @@ VALUE cIGraph_community_spinglass(VALUE self, VALUE weights, VALUE spins, VALUE 
   VALUE groups;
   VALUE res;
 
-  VALUE str;
+  /*VALUE str;*/
 
   int i,groupid,max_groupid;
 
@@ -253,13 +253,11 @@ VALUE cIGraph_community_leading_eigenvector(VALUE self, VALUE steps){
 
   igraph_vector_t membership;
   igraph_matrix_t *merges = malloc(sizeof(igraph_matrix_t));
-  
-igraph_arpack_options_t arpack_opt;
-igraph_arpack_options_init(&arpack_opt);
-
   int i,groupid,max_groupid;
-
   VALUE groups, group, res;
+  
+  igraph_arpack_options_t arpack_opt;
+  igraph_arpack_options_init(&arpack_opt);
 
   Data_Get_Struct(self, igraph_t, graph);
 
@@ -318,13 +316,11 @@ VALUE cIGraph_community_leading_eigenvector_naive(VALUE self, VALUE steps){
 
   igraph_vector_t membership;
   igraph_matrix_t *merges = malloc(sizeof(igraph_matrix_t));
-
-igraph_arpack_options_t arpack_opt;
-igraph_arpack_options_init(&arpack_opt);
-
   int i,groupid,max_groupid;
-
   VALUE groups, group, res;
+
+  igraph_arpack_options_t arpack_opt;
+  igraph_arpack_options_init(&arpack_opt);
 
   Data_Get_Struct(self, igraph_t, graph);
 
@@ -383,13 +379,11 @@ VALUE cIGraph_community_leading_eigenvector_step(VALUE self, VALUE membership, V
   igraph_vector_t eigenvector;
   igraph_real_t eigenvalue;
   igraph_bool_t split;
-
   int i,j,groupid,max_groupid,vid;
-
-igraph_arpack_options_t arpack_opt;
-igraph_arpack_options_init(&arpack_opt);
-
   VALUE groups, group, res, eigenvector_a, obj;
+
+  igraph_arpack_options_t arpack_opt;
+  igraph_arpack_options_init(&arpack_opt);
 
   Data_Get_Struct(self, igraph_t, graph);
 

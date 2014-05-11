@@ -782,7 +782,6 @@ VALUE cIGraph_write_graph_gml(VALUE self, VALUE file){
   Data_Get_Struct(self, igraph_t, graph);
 
   stream = open_memstream(&buf,&size);
-  printf("size=%i\n",size);
   e = igraph_write_graph_gml(graph, stream, NULL, 0);
   fflush(stream);
 
