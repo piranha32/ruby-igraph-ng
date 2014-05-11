@@ -35,7 +35,7 @@ VALUE cIGraph_grg_game(VALUE self, VALUE nodes, VALUE radius, VALUE torus){
 /* call-seq:
  *   IGraph::GenerateRandom.barabasi_game(n,m,outpref,directed) -> IGraph
  *
- * Generates a graph based on the Barabási-Albert model.
+ * Generates a graph based on the Barabï¿½si-Albert model.
  *
  * n: The number of vertices in the graph.
  * m: The number of outgoing edges generated for each vertex.
@@ -771,7 +771,7 @@ VALUE cIGraph_citing_cited_type_game(VALUE self, VALUE nodes, VALUE types, VALUE
     igraph_vector_push_back(&typev,NUM2INT(RARRAY_PTR(types)[i]));
   }
 
-  printf("ok\n");
+  /*printf("ok\n");*/
     
   igraph_destroy(graph);
   igraph_citing_cited_type_game(graph, NUM2INT(nodes),
@@ -780,7 +780,7 @@ VALUE cIGraph_citing_cited_type_game(VALUE self, VALUE nodes, VALUE types, VALUE
 				NUM2INT(e_per_s),
 				directed == Qtrue ? 1: 0);
 
-  printf("death\n");
+  /*printf("death\n");*/
 
   igraph_vector_destroy(&typev);
 

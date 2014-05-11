@@ -70,7 +70,7 @@ layout=g.layout_circle
 draw_graph(layout.to_a, g, "test_layout_circle.png",width,height)
 
 puts "Running layout_fruchterman_reingold"
-layout=g.layout_fruchterman_reingold(10000, 0.01, 100, 0.1, 30, 1234)
+layout=g.layout_fruchterman_reingold(500, 0.01, 100, 0.1, 30, 1234)
 draw_graph(layout.to_a, g, "test_layout_fruchterman_reingold.png",width,height)
 
 puts "Running layout_random"
@@ -78,7 +78,7 @@ layout=g.layout_random
 draw_graph(layout.to_a, g, "test_layout_random.png",width,height)
 
 puts "Running layout_kamada_kawai"
-layout=g.layout_kamada_kawai(1000,0.1,1000,0.5,2)
+layout=g.layout_kamada_kawai(500,0.1,1000,0.5,2)
 draw_graph(layout.to_a, g, "test_layout_kamada_kawai.png",width,height)
 
 puts "Running layout_reingold_tilford"
@@ -90,11 +90,11 @@ layout=g.layout_reingold_tilford_circular(0)
 draw_graph(layout.to_a, g, "test_layout_reingold_tilford_circular.png",width,height)
 
 puts "Running layout_grid_fruchterman_reingold"
-layout=g.layout_grid_fruchterman_reingold(10000, 0.01, 100, 0.1, 30, 20, false)
+layout=g.layout_grid_fruchterman_reingold(500, 0.01, 100, 0.1, 30, 20, false)
 draw_graph(layout.to_a, g, "test_layout_grid_fruchterman_reingold.png",width,height)
 
 puts "Running layout_lgl"
-layout=g.layout_lgl(10000, 0.01, 100, 0.1, 30, 20, 0)
+layout=g.layout_lgl(500, 0.01, 100, 0.1, 30, 20, 0)
 draw_graph(layout.to_a, g, "test_.png",width,height)
 
 puts "Running layout_random_3d"
@@ -107,13 +107,13 @@ draw_graph(layout.to_a, g, "test_layout_sphere.png",width,height)
 
 #Could not find params for which FR3D would work properly
 #puts "Running layout_fruchterman_reingold_3d"
-#layout=g.layout_fruchterman_reingold_3d(10000, 0.01, 100, 0.1, 30)
+#layout=g.layout_fruchterman_reingold_3d(500, 0.01, 100, 0.1, 30)
 #require 'pry'
 #binding.pry
 #draw_graph(layout.to_a, g, "test_layout_fruchterman_reingold_3d.png",width,height)
 
 puts "Running layout_kamada_kawai_3d"
-layout=g.layout_kamada_kawai_3d(1000,0.1,1000,0.5,2)
+layout=g.layout_kamada_kawai_3d(500,0.1,1000,0.5,2)
 draw_graph(layout.to_a, g, "test_layout_kamada_kawai_3d.png",width,height)
 
 

@@ -1,3 +1,9 @@
+= igraph-ng-0.1.0 2014-05-11
+
+* Gem name changed to igraph-ng
+* Reset of version numbering
+* Gem installs cleanly and passes tests with igraph-0.5.4
+
 = 0.10.0 2014-05-11
 
 * Native extension ported to ruby 1.9

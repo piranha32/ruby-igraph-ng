@@ -469,7 +469,7 @@ int cIGraph_attribute_get_info(const igraph_t *graph,
 
     //Push names onto n and types onto t
     for(j=0;j<RARRAY_LEN(rb_names);j++){
-      printf("name=%s\n",RSTRING_PTR(RARRAY_PTR(rb_names)[j]));
+      /*printf("name=%s\n",RSTRING_PTR(RARRAY_PTR(rb_names)[j]));*/
       igraph_strvector_add(n, RSTRING_PTR(RARRAY_PTR(rb_names)[j]));
       igraph_vector_push_back(t, NUM2INT(RARRAY_PTR(rb_types)[j]));
     }
