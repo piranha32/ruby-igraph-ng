@@ -4,13 +4,14 @@ require 'cairo'
 gs = []
 vs = []
 ARGV[0].to_i.times do |n|
-  gs << IGraph.atlas(n+1)
+  gs << IGraph::Generate.atlas(n+1)
   vs += gs[-1].vertices
 end
 
 ls = gs.map{|g| g.layout_fruchterman_reingold(10,1,1,2,1,false)}
 
-layout = IGraph.layout_merge_dla(gs,ls).to_a
+#layout = IGraph.layout_merge_dla(gs,ls).to_a
+layout = IGraph::Layout.layout_merge_dla(gs,ls).to_a
 
 format = Cairo::FORMAT_ARGB32
 width = 1000
@@ -53,7 +54,7 @@ g  = gs[gi]
 
 layout.each_with_index do |a,i|
 
-  sub_layout = layout[start..finish]
+  #sub_layout = layout[start..finish]
 
   v = vs[i]
   x,y = *a

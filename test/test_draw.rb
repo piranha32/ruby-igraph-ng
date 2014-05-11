@@ -1,7 +1,7 @@
 require 'igraph'
 require 'cairo'
 
-g = IGraph.barabasi_game(100,3,false,false)
+g = IGraph::GenerateRandom.barabasi_game(100,3,false,false)
 
 vertices = g.to_a
 layout   = g.send(ARGV.shift.to_sym,*ARGV.map{|a| eval(a)}).to_a

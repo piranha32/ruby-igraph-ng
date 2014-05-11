@@ -35,7 +35,7 @@ VALUE cIGraph_read_graph_edgelist(VALUE self, VALUE file, VALUE directed){
   Data_Get_Struct(new_graph, igraph_t, graph);
 
   string = rb_funcall(file, rb_intern("read"), 0);
-  stream = fmemopen(RSTRING(string)->ptr,RSTRING(string)->len, "r");
+  stream = fmemopen(RSTRING_PTR(string),RSTRING_LEN(string), "r");
 
   igraph_read_graph_edgelist(graph, stream, 0, directed_b);
 
@@ -86,6 +86,7 @@ VALUE cIGraph_write_graph_edgelist(VALUE self, VALUE file){
   rb_funcall(file, rb_intern("write"), 1, rb_str_new(buf,size));
 
   fclose(stream);
+  free(buf);
 
   return e;
 
@@ -156,16 +157,16 @@ VALUE cIGraph_read_graph_ncol(VALUE self, VALUE file, VALUE predefnames, VALUE n
   new_graph = cIGraph_alloc(cIGraph);
   Data_Get_Struct(new_graph, igraph_t, graph);
 
-  igraph_strvector_init(&names_vec,RARRAY(predefnames)->len);
+  igraph_strvector_init(&names_vec,RARRAY_LEN(predefnames));
 
-  for(i=0;i<RARRAY(predefnames)->len;i++){
-    igraph_strvector_set(&names_vec, i, RSTRING(RARRAY(predefnames)->ptr[i])->ptr);
+  for(i=0;i<RARRAY_LEN(predefnames);i++){
+    igraph_strvector_set(&names_vec, i, RSTRING_PTR(RARRAY_PTR(predefnames)[i]));
   }
 
   string = rb_funcall(file, rb_intern("read"), 0);
-  stream = fmemopen(RSTRING(string)->ptr,RSTRING(string)->len, "r");
+  stream = fmemopen(RSTRING_PTR(string),RSTRING_LEN(string), "r");
 
-  if (RARRAY(predefnames)->len == 0){
+  if (RARRAY_LEN(predefnames) == 0){
     igraph_read_graph_ncol(graph, stream, NULL, names_b, weights_b, directed_b);
   } else {
     igraph_read_graph_ncol(graph, stream, &names_vec, names_b, weights_b, directed_b);
@@ -177,8 +178,8 @@ VALUE cIGraph_read_graph_ncol(VALUE self, VALUE file, VALUE predefnames, VALUE n
   if(names){
     v_ary = ((VALUE*)graph->attr)[0];
     new_ary = rb_ary_new();
-    for(i=0;i<RARRAY(v_ary)->len;i++){
-      rb_ary_push(new_ary, rb_hash_aref(RARRAY(v_ary)->ptr[i], rb_str_new2("name")));
+    for(i=0;i<RARRAY_LEN(v_ary);i++){
+      rb_ary_push(new_ary, rb_hash_aref(RARRAY_PTR(v_ary)[i], rb_str_new2("name")));
     }
     ((VALUE*)graph->attr)[0] = new_ary;
   }
@@ -186,8 +187,8 @@ VALUE cIGraph_read_graph_ncol(VALUE self, VALUE file, VALUE predefnames, VALUE n
   if(weights){
     e_ary = ((VALUE*)graph->attr)[1];
     new_ary = rb_ary_new();
-    for(i=0;i<RARRAY(e_ary)->len;i++){
-      rb_ary_push(new_ary, rb_hash_aref(RARRAY(e_ary)->ptr[i], rb_str_new2("weight")));
+    for(i=0;i<RARRAY_LEN(e_ary);i++){
+      rb_ary_push(new_ary, rb_hash_aref(RARRAY_PTR(e_ary)[i], rb_str_new2("weight")));
     }
     ((VALUE*)graph->attr)[1] = new_ary;
   }
@@ -232,14 +233,14 @@ VALUE cIGraph_write_graph_ncol(VALUE self, VALUE file, VALUE names, VALUE weight
   VALUE vertex_h;
   VALUE edge_h;
 
-  char *weights_b = "0";
-  char *names_b   = "0";
+  char *weights_b = (char*)"0";
+  char *names_b   = (char*)"0";
 
   if(names)
-    names_b = "name";
+    names_b = (char*)"name";
   
   if(weights)
-    weights_b = "weight";
+    weights_b = (char*)"weight";
 
   Data_Get_Struct(self, igraph_t, graph);
 
@@ -248,9 +249,9 @@ VALUE cIGraph_write_graph_ncol(VALUE self, VALUE file, VALUE names, VALUE weight
   if(names){
     v_ary = ((VALUE*)graph->attr)[0];
     new_v_ary = rb_ary_new();
-    for(i=0;i<RARRAY(v_ary)->len;i++){
+    for(i=0;i<RARRAY_LEN(v_ary);i++){
       vertex_h = rb_hash_new();
-      rb_hash_aset(vertex_h, rb_str_new2("name"), StringValue(RARRAY(v_ary)->ptr[i]));
+      rb_hash_aset(vertex_h, rb_str_new2("name"), StringValue(RARRAY_PTR(v_ary)[i]));
       rb_ary_push(new_v_ary, vertex_h);
     }
     ((VALUE*)graph->attr)[0] = new_v_ary;
@@ -258,9 +259,9 @@ VALUE cIGraph_write_graph_ncol(VALUE self, VALUE file, VALUE names, VALUE weight
   if(weights){
     e_ary = ((VALUE*)graph->attr)[1];
     new_e_ary = rb_ary_new();
-    for(i=0;i<RARRAY(e_ary)->len;i++){
+    for(i=0;i<RARRAY_LEN(e_ary);i++){
       edge_h = rb_hash_new();
-      rb_hash_aset(edge_h, rb_str_new2("weight"), rb_funcall(RARRAY(e_ary)->ptr[i],rb_intern("to_f"),0));
+      rb_hash_aset(edge_h, rb_str_new2("weight"), rb_funcall(RARRAY_PTR(e_ary)[i],rb_intern("to_f"),0));
      rb_ary_push(new_e_ary, edge_h);
     }
     ((VALUE*)graph->attr)[1] = new_e_ary;
@@ -271,6 +272,7 @@ VALUE cIGraph_write_graph_ncol(VALUE self, VALUE file, VALUE names, VALUE weight
   fflush(stream);
   rb_funcall(file, rb_intern("write"), 1, rb_str_new(buf,size));
   fclose(stream);
+  free(buf);
 
   //Replace initital vertices and edges
   if(names){
@@ -342,7 +344,7 @@ VALUE cIGraph_read_graph_lgl(VALUE self, VALUE file, VALUE names, VALUE weights)
   Data_Get_Struct(new_graph, igraph_t, graph);
 
   string = rb_funcall(file, rb_intern("read"), 0);
-  stream = fmemopen(RSTRING(string)->ptr,RSTRING(string)->len, "r");
+  stream = fmemopen(RSTRING_PTR(string),RSTRING_LEN(string), "r");
 
   igraph_read_graph_lgl(graph, stream, names_b, weights_b);
 
@@ -352,8 +354,8 @@ VALUE cIGraph_read_graph_lgl(VALUE self, VALUE file, VALUE names, VALUE weights)
   if(names){
     v_ary = ((VALUE*)graph->attr)[0];
     new_ary = rb_ary_new();
-    for(i=0;i<RARRAY(v_ary)->len;i++){
-      rb_ary_push(new_ary, rb_hash_aref(RARRAY(v_ary)->ptr[i], rb_str_new2("name")));
+    for(i=0;i<RARRAY_LEN(v_ary);i++){
+      rb_ary_push(new_ary, rb_hash_aref(RARRAY_PTR(v_ary)[i], rb_str_new2("name")));
     }
     ((VALUE*)graph->attr)[0] = new_ary;
   }
@@ -361,8 +363,8 @@ VALUE cIGraph_read_graph_lgl(VALUE self, VALUE file, VALUE names, VALUE weights)
   if(weights){
     e_ary = ((VALUE*)graph->attr)[1];
     new_ary = rb_ary_new();
-    for(i=0;i<RARRAY(e_ary)->len;i++){
-      rb_ary_push(new_ary, rb_hash_aref(RARRAY(e_ary)->ptr[i], rb_str_new2("weight")));
+    for(i=0;i<RARRAY_LEN(e_ary);i++){
+      rb_ary_push(new_ary, rb_hash_aref(RARRAY_PTR(e_ary)[i], rb_str_new2("weight")));
     }
     ((VALUE*)graph->attr)[1] = new_ary;
   }
@@ -408,19 +410,20 @@ VALUE cIGraph_write_graph_lgl(VALUE self, VALUE file, VALUE names, VALUE weights
   VALUE vertex_h;
   VALUE edge_h;
 
-  char *weights_b = "0";
-  char *names_b   = "0";
+  char *weights_b = (char*)"0";
+  char *names_b   = (char*)"0";
 
-  igraph_bool_t isolates_b;
+  /*igraph_bool_t isolates_b;*/ /* not used */
 
   if(names)
-    names_b = "name";
+    names_b = (char*)"name";
   
   if(weights)
-    weights_b = "weight";
+    weights_b = (char*)"weight";
 
+  /*
   if(isolates)
-    isolates_b = 1;
+    isolates_b = 1;*/ /* not used */
 
   Data_Get_Struct(self, igraph_t, graph);
 
@@ -429,9 +432,9 @@ VALUE cIGraph_write_graph_lgl(VALUE self, VALUE file, VALUE names, VALUE weights
   if(names){
     v_ary = ((VALUE*)graph->attr)[0];
     new_v_ary = rb_ary_new();
-    for(i=0;i<RARRAY(v_ary)->len;i++){
+    for(i=0;i<RARRAY_LEN(v_ary);i++){
       vertex_h = rb_hash_new();
-      rb_hash_aset(vertex_h, rb_str_new2("name"), StringValue(RARRAY(v_ary)->ptr[i]));
+      rb_hash_aset(vertex_h, rb_str_new2("name"), StringValue(RARRAY_PTR(v_ary)[i]));
       rb_ary_push(new_v_ary, vertex_h);
     }
     ((VALUE*)graph->attr)[0] = new_v_ary;
@@ -439,9 +442,9 @@ VALUE cIGraph_write_graph_lgl(VALUE self, VALUE file, VALUE names, VALUE weights
   if(weights){
     e_ary = ((VALUE*)graph->attr)[1];
     new_e_ary = rb_ary_new();
-    for(i=0;i<RARRAY(e_ary)->len;i++){
+    for(i=0;i<RARRAY_LEN(e_ary);i++){
       edge_h = rb_hash_new();
-      rb_hash_aset(edge_h, rb_str_new2("weight"), rb_funcall(RARRAY(e_ary)->ptr[i],rb_intern("to_f"),0));
+      rb_hash_aset(edge_h, rb_str_new2("weight"), rb_funcall(RARRAY_PTR(e_ary)[i],rb_intern("to_f"),0));
      rb_ary_push(new_e_ary, edge_h);
     }
     ((VALUE*)graph->attr)[1] = new_e_ary;
@@ -452,6 +455,7 @@ VALUE cIGraph_write_graph_lgl(VALUE self, VALUE file, VALUE names, VALUE weights
   fflush(stream);
   rb_funcall(file, rb_intern("write"), 1, rb_str_new(buf,size));
   fclose(stream);
+  free(buf);
 
   //Replace initital vertices and edges
   if(names){
@@ -523,10 +527,9 @@ VALUE cIGraph_read_graph_dimacs(VALUE self, VALUE file, VALUE directed){
   Data_Get_Struct(new_graph, igraph_t, graph);
 
   string = rb_funcall(file, rb_intern("read"), 0);
-  stream = fmemopen(RSTRING(string)->ptr,RSTRING(string)->len, "r");
+  stream = fmemopen(RSTRING_PTR(string),RSTRING_LEN(string), "r");
 
-  igraph_read_graph_dimacs(graph, stream, &source, &target, &capacity, directed_b);
-
+  igraph_read_graph_dimacs(graph, stream, NULL, NULL, &source, &target, &capacity, directed_b);
   fclose(stream);
 
   igraph_vs_all(&vs);
@@ -590,8 +593,8 @@ VALUE cIGraph_write_graph_dimacs(VALUE self, VALUE file, VALUE source, VALUE tar
 
   igraph_vector_init(&capacity_v,0);
 
-  for(i=0;i<RARRAY(capacity)->len;i++){
-    igraph_vector_push_back(&capacity_v,NUM2DBL(RARRAY(capacity)->ptr[i]));
+  for(i=0;i<RARRAY_LEN(capacity);i++){
+    igraph_vector_push_back(&capacity_v,NUM2DBL(RARRAY_PTR(capacity)[i]));
   }
 
   stream = open_memstream(&buf,&size);
@@ -599,6 +602,7 @@ VALUE cIGraph_write_graph_dimacs(VALUE self, VALUE file, VALUE source, VALUE tar
   fflush(stream);
   rb_funcall(file, rb_intern("write"), 1, rb_str_new(buf,size));
   fclose(stream);
+  free(buf);
 
   return e;
 
@@ -636,7 +640,7 @@ VALUE cIGraph_read_graph_graphdb(VALUE self, VALUE file, VALUE directed){
   Data_Get_Struct(new_graph, igraph_t, graph);
 
   string = rb_funcall(file, rb_intern("read"), 0);
-  stream = fmemopen(RSTRING(string)->ptr,RSTRING(string)->len, "r");
+  stream = fmemopen(RSTRING_PTR(string),RSTRING_LEN(string), "r");
 
   igraph_read_graph_graphdb(graph, stream, directed_b);
 
@@ -685,7 +689,7 @@ VALUE cIGraph_read_graph_graphml(VALUE self, VALUE file, VALUE index){
   Data_Get_Struct(new_graph, igraph_t, graph);
 
   string = rb_funcall(file, rb_intern("read"), 0);
-  stream = fmemopen(RSTRING(string)->ptr,RSTRING(string)->len, "r");
+  stream = fmemopen(RSTRING_PTR(string),RSTRING_LEN(string), "r");
 
   igraph_read_graph_graphml(graph, stream, NUM2INT(index));
 
@@ -722,6 +726,7 @@ VALUE cIGraph_write_graph_graphml(VALUE self, VALUE file){
   rb_funcall(file, rb_intern("write"), 1, rb_str_new(buf,size));
 
   fclose(stream);
+  free(buf);
 
   return e;
 
@@ -749,7 +754,7 @@ VALUE cIGraph_read_graph_gml(VALUE self, VALUE file){
   Data_Get_Struct(new_graph, igraph_t, graph);
 
   string = rb_funcall(file, rb_intern("read"), 0);
-  stream = fmemopen(RSTRING(string)->ptr,RSTRING(string)->len, "r");
+  stream = fmemopen(RSTRING_PTR(string),RSTRING_LEN(string), "r");
 
   igraph_read_graph_gml(graph, stream);
 
@@ -777,12 +782,14 @@ VALUE cIGraph_write_graph_gml(VALUE self, VALUE file){
   Data_Get_Struct(self, igraph_t, graph);
 
   stream = open_memstream(&buf,&size);
+  printf("size=%i\n",size);
   e = igraph_write_graph_gml(graph, stream, NULL, 0);
   fflush(stream);
 
   rb_funcall(file, rb_intern("write"), 1, rb_str_new(buf,size));
 
   fclose(stream);
+  free(buf);
 
   return e;
 
@@ -808,7 +815,7 @@ VALUE cIGraph_read_graph_pajek(VALUE self, VALUE file){
   Data_Get_Struct(new_graph, igraph_t, graph);
 
   string = rb_funcall(file, rb_intern("read"), 0);
-  stream = fmemopen(RSTRING(string)->ptr,RSTRING(string)->len, "r");
+  stream = fmemopen(RSTRING_PTR(string),RSTRING_LEN(string), "r");
 
   IGRAPH_CHECK(igraph_read_graph_pajek(graph, stream));
 
@@ -840,6 +847,7 @@ VALUE cIGraph_write_graph_pajek(VALUE self, VALUE file){
   rb_funcall(file, rb_intern("write"), 1, rb_str_new(buf,size));
 
   fclose(stream);
+  free(buf);
 
   return e;
 

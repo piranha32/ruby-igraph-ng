@@ -11,7 +11,7 @@ class TestGraph < Test::Unit::TestCase
     groups,mod,temp = g.community_spinglass([],25,false,1,0.01,0.99,IGraph::SPINCOMM_UPDATE_SIMPLE,1.0)
     assert_in_delta 0.25, mod,  0.15
     assert_in_delta 0.200, temp, 0.100
-    assert_equal [['A','B','C','D','E','F']], groups
+    assert_equal [['A','B','C'],['D','E','F']], groups
     commun,coh,adh  = g.community_spinglass_single([],'A',25,IGraph::SPINCOMM_UPDATE_SIMPLE,1.0)
     assert_in_delta 1.25, coh,  0.001
     assert_in_delta(-2.5, adh, 0.100)

@@ -2,20 +2,16 @@ require 'hoe'
 
 $LOAD_PATH.unshift("./ext")
 
-class IGraph
-  VERSION = "0.9.5"
-end
-
 begin 
   require 'igraph'
 rescue RuntimeError
 end
 
-hoe = Hoe.new("igraph",IGraph::VERSION) do |p|
+hoe = Hoe.spec("igraph") do |p|
   
   p.author = "Alex Gutteridge"
   p.email = "ag357@cam.ac.uk"
-  p.url = "http://igraph.rubyforge.org/"
+  p.urls = ["http://igraph.rubyforge.org/"]
   
   p.description = p.paragraphs_of("README.txt",1..3)[0]
   p.summary     = p.paragraphs_of("README.txt",1)[0]
@@ -23,7 +19,8 @@ hoe = Hoe.new("igraph",IGraph::VERSION) do |p|
   
   p.clean_globs = ["ext/*.o","ext/*.so","ext/Makefile","ext/mkmf.log","**/*~","email.txt","manual.{aux,log,out,toc,pdf}"]
   
-  p.rdoc_pattern = /(^ext\/.*\.c$|^README|^History|^License)/
+  p.extra_rdoc_files = %w[
+  ]
   
   p.spec_extras = {
     :extensions    => ['ext/extconf.rb'],
